@@ -30,6 +30,8 @@ func init() {
 }
 
 func RequiredFlag(ErrorMessage string) string {
+	// shim to trick the compiler so that we can actually call os.Exit(1) and
+	// print a helpful error message when a flag is required.
 	log.Fatalln(ErrorMessage)
 	return "requiredstring"
 }
