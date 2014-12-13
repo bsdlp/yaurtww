@@ -1,6 +1,7 @@
 package yaurtww
 
 import (
+	"io/ioutil"
 	"log"
 
 	flag "github.com/docker/docker/pkg/mflag"
@@ -34,4 +35,13 @@ func RequiredFlag(ErrorMessage string) string {
 	// print a helpful error message when a flag is required.
 	log.Fatalln(ErrorMessage)
 	return "requiredstring"
+}
+
+func ReadManifest(path *string) (*Manifest, error) {
+	var manifest = Manifest{}
+	file, err := ioutil.ReadFile(*path)
+	if err != nil {
+		return manifest, err
+	}
+	return manifest, nil
 }
