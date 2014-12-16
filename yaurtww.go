@@ -1,8 +1,12 @@
 package yaurtww
 
 import (
+	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
+	"net/http"
+	"strconv"
 
 	flag "github.com/docker/docker/pkg/mflag"
 )
@@ -44,4 +48,23 @@ func ReadManifest(path *string) (*Manifest, error) {
 		return manifest, err
 	}
 	return manifest, nil
+}
+
+func (asset ManifestAsset) Download(url string) error {
+	var source io.Reader
+	var sourceSize int64
+
+	assetURL := url + asset.FileName
+	resp, err := http.Get(assetURL)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("Error getting %s: HTTP status %v", assetURL, resp.Status)
+	}
+
+	i, _ := strconv.Atoi(resp.Header.Get("Content-Length"))
+	sourceSize = int64(i)
 }
