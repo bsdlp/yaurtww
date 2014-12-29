@@ -66,8 +66,8 @@ func (asset ManifestAsset) Download(url string) (err error) {
 		return fmt.Errorf("Error getting %s: HTTP status %v", assetURL, resp.Status)
 	}
 
-	i, _ := strconv.Atoi(resp.Header.Get("Content-Length"))
-	sourceSize = int64(i)
+	contentlength, _ := strconv.Atoi(resp.Header.Get("Content-Length"))
+	sourceSize = int64(contentlength)
 
 	file, err := os.Create(downloadPath)
 	if err != nil {
