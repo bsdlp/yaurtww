@@ -45,17 +45,12 @@ func RequiredFlag(ErrorMessage string) string {
 	return "requiredstring"
 }
 
-func ReadManifest(path *string) (*Manifest, error) {
-	var manifest = Manifest{}
+func ReadManifest(path *string) (manifest *Manifest, err error) {
 	file, err := ioutil.ReadFile(*path)
-	if err != nil {
-		return manifest, err
-	}
-	return manifest, nil
+	return
 }
 
-func (asset ManifestAsset) Download(url string) error {
-	var source io.Reader
+func (asset ManifestAsset) Download(url string) (err error) {
 	var sourceSize int64
 
 	downloadPath := *DownloadPath + asset.FileName
@@ -63,7 +58,7 @@ func (asset ManifestAsset) Download(url string) error {
 	assetURL := url + asset.FileName
 	resp, err := http.Get(assetURL)
 	if err != nil {
-		return err
+		return
 	}
 	defer resp.Body.Close()
 
@@ -76,7 +71,7 @@ func (asset ManifestAsset) Download(url string) error {
 
 	file, err := os.Create(downloadPath)
 	if err != nil {
-		return err
+		return
 	}
 	defer file.close()
 
@@ -88,4 +83,5 @@ func (asset ManifestAsset) Download(url string) error {
 
 	io.Copy(writer, resp.Body)
 	bar.Finish()
+	return
 }
