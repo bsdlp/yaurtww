@@ -73,7 +73,7 @@ func (asset ManifestAsset) Download(url string) (err error) {
 	if err != nil {
 		return
 	}
-	defer file.close()
+	defer file.Close()
 
 	bar := pb.New(int(sourceSize)).SetUnits(pb.U_BYTES).SetRefreshRate(time.Millisecond * 10)
 	bar.ShowSpeed = true
