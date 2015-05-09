@@ -15,29 +15,36 @@ import (
 	flag "github.com/docker/docker/pkg/mflag"
 )
 
+// Manifest is the manifest provided by the urban terror site, and describes
+// what assets are required and states the version of the game.
 type Manifest struct {
 	Version string
 	Assets  []ManifestAsset
 }
 
+// ManifestAsset is a single manifest, and contains a checksum and filename.
 type ManifestAsset struct {
 	MD5Sum   string
 	FileName string
 }
 
-// const CDN_URL = "http://cdn.urbanterror.info/urt/%s/%s/q3ut4/%s"
-const CDN_URL = "http://cdn.urbanterror.info/urt/"
+// const CDNURL = "http://cdn.urbanterror.info/urt/%s/%s/q3ut4/%s"
+const CDNURL = "http://cdn.urbanterror.info/urt/"
 
 var (
-	ManifestPath *string
+	// ManifestPath is the path to the manifest.
+	ManifestPath string
+	// DownloadPath points to the destination directory for download.
 	DownloadPath = flag.String([]string{"d", "-dest"}, "./", "Path to destination directory")
-	Version      = flag.Bool([]string{"v", "-version"}, false, "Print the name and version")
+	// Version prints the version of yaurtww
+	Version = flag.Bool([]string{"v", "-version"}, false, "Print the name and version")
 )
 
 func init() {
 	ManifestPath = flag.String([]string{"m", "-manifest"}, RequiredFlag("Manifest is required."), "Path to yaurtww manifest")
 }
 
+// RequiredFlag is a shim to print error messages for flags.
 func RequiredFlag(ErrorMessage string) string {
 	// shim to trick the compiler so that we can actually call os.Exit(1) and
 	// print a helpful error message when a flag is required.
@@ -45,11 +52,13 @@ func RequiredFlag(ErrorMessage string) string {
 	return "requiredstring"
 }
 
+// ReadManifest reads the stored manifest and returns it as Manifest
 func ReadManifest(path *string) (manifest *Manifest, err error) {
 	file, err := ioutil.ReadFile(*path)
 	return
 }
 
+// Download downloads the file.
 func (asset ManifestAsset) Download(url string) (err error) {
 	var sourceSize int64
 
